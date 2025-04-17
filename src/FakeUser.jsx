@@ -1,7 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
 
-// Função para buscar um novo usuário
 async function loadUser() {
     let resp = await fetch("https://randomuser.me/api/");
     let data = await resp.json();
@@ -23,7 +22,6 @@ export default function FakeUser() {
         urlPhoto: "https://picsum.photos/200/300"
     });
 
-    // Carregar um novo usuário quando o componente for montado
     useEffect(() => {
         async function fetchUser() {
             const newUser = await loadUser();
@@ -32,7 +30,6 @@ export default function FakeUser() {
         fetchUser();
     }, []);
 
-    // Função de clique para atualizar o usuário
     const handleRefreshClick = async () => {
         const newUser = await loadUser();
         setUser(newUser);
