@@ -1,15 +1,39 @@
 import { Icon } from "@iconify/react";
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
-const _user = {
-    name: "Ana Alface",
-    username: "anaalface",
-    email: "ana@ana.com",
-    urlPhoto: "https://picsum.photos/200/300"
+async function loadUser() {
+    let resp = await fetch("https://randomuser.me/api/");
+    let data = await resp.json();
+    let fakeUser = data.results[0];
+    
+    return {
+        name: fakeUser.name.first + " " + fakeUser.name.last,
+        username: fakeUser.login.username,
+        email: fakeUser.email,
+        urlPhoto: fakeUser.picture.medium
+    };
 }
 
 export default function FakeUser() {
-    const [ user, setUser ] = useState(_user)
+    const [user, setUser] = useState({
+        name: "Ana Alface",
+        username: "anaalface",
+        email: "ana@ana.com",
+        urlPhoto: "https://picsum.photos/200/300"
+    });
+
+    useEffect(() => {
+        async function fetchUser() {
+            const newUser = await loadUser();
+            setUser(newUser);
+        }
+        fetchUser();
+    }, []);
+
+    const handleRefreshClick = async () => {
+        const newUser = await loadUser();
+        setUser(newUser);
+    };
 
     return (
         <>
@@ -30,10 +54,13 @@ export default function FakeUser() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-gray-400 p-1 rounded-lg flex items-center cursor-pointer hover:bg-gray-500">
+                <div
+                    className="bg-gray-400 p-1 rounded-lg flex items-center cursor-pointer hover:bg-gray-500"
+                    onClick={handleRefreshClick} // Adiciona o evento de clique para atualizar o usuário
+                >
                     <Icon icon="mdi-refresh" className="text-black text-3xl"/>
                 </div>
             </div>
         </>
-    )
+    );
 }
